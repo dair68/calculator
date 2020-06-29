@@ -91,7 +91,3 @@ class Calculator(tk.Frame):
     def clearDisplay(self):
         self.display["text"] = ""
         
-root = tk.Tk()
-app = Calculator(root)
-app.mainloop()
-        
