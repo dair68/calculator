@@ -91,6 +91,29 @@ def evaluate(expression):
                 
         return str(quotient)
     
+    #exponenet
+    if "^" in expression:
+        print("exponentiation")
+        parts = expression.split("^")
+        answer = evaluate(parts[-1])
+        
+        #error
+        if not isNumber(answer):
+                return answer if errorMessage(answer) else "syntax error"
+        
+        #raising powers
+        for i in range(-2, -len(parts)-1, -1):
+            print(i)
+            base = evaluate(parts[i])
+            
+            #error
+            if not isNumber(base):
+                return base if errorMessage(base) else "syntax error"
+    
+            answer = float(base) ** float(answer)
+            
+        return str(answer)
+    
     return expression if isNumber(expression) else "error. can't compute"
         
         

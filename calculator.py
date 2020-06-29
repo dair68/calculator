@@ -21,25 +21,25 @@ class Calculator(tk.Frame):
     #creates child widgets
     def createWidgets(self):
         self.display = tk.Label(self, bg="white", anchor="w")
-        self.display.grid(row = 0, column = 0, columnspan=4)
+        self.display.grid(row=0, column=0, columnspan=4)
         
         self.enterButton = tk.Button(self)
         self.enterButton["text"] = "Enter"
-        self.enterButton.grid(row = 4, column = 4)
+        self.enterButton.grid(row=5, column=4)
         self.enterButton.bind("<Button-1>", lambda e : self.compute())
         
         self.decimalButton = tk.Button(self)
         self.decimalButton["text"] = "."
         self.decimalButton.bind("<Button-1>", self.appendSymbol)
-        self.decimalButton.grid(row = 4, column = 1)
+        self.decimalButton.grid(row=5, column=1)
         
         self.answerButton = tk.Button(self)
         self.answerButton["text"] = "ans"
-        self.answerButton.grid(row = 4, column = 2)
+        self.answerButton.grid(row=5, column=2)
         
         self.clearButton = tk.Button(self)
         self.clearButton["text"] = "clear"
-        self.clearButton.grid(row=3, column=4)
+        self.clearButton.grid(row=4, column=4)
         self.clearButton.bind("<Button-1>", lambda e : self.clearDisplay())
         
         self.createNumButtons()
@@ -53,9 +53,9 @@ class Calculator(tk.Frame):
             
             #placing 0 button in bottom left
             if i == 0:
-                button.grid(row = 4, column = 0)
+                button.grid(row = 5, column = 0)
             else:
-                button.grid(row = (9-i)//3 + 1, column = (i-1)%3)
+                button.grid(row = (9-i)//3 + 2, column = (i-1)%3)
             
             button["text"] = i
             button.bind("<Button-1>", self.appendSymbol)
@@ -64,8 +64,8 @@ class Calculator(tk.Frame):
     #creates operator buttons
     def createOperatorButtons(self):
         self.operatorButtons = {}
-        symbols = ["/", "*", "+", "-"]
-        keys = ["div", "mult", "add", "sub"]
+        symbols = ["^", "/", "*", "+", "-"]
+        keys = ["exp", "div", "mult", "add", "sub"]
         
         for i in range(len(keys)):
             button = tk.Button(self)
@@ -90,4 +90,3 @@ class Calculator(tk.Frame):
     #clears all text from display
     def clearDisplay(self):
         self.display["text"] = ""
-        
