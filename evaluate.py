@@ -29,10 +29,12 @@ def evaluate(expression):
             
         return str(total)
     
+    subPattern = r"(?<=[^^/*-])-"
+    
     #subtraction
-    if re.search(r"(?<=[^/*-])-", expression):
+    if re.search(subPattern, expression):
         print("subtracting")
-        terms = re.split(r"(?<=[^/*-])-", expression)
+        terms = re.split(subPattern, expression)
         total = 0
         
         #subtracting
@@ -91,7 +93,7 @@ def evaluate(expression):
                 
         return str(quotient)
     
-    #exponenet
+    #exponent
     if "^" in expression:
         print("exponentiation")
         parts = expression.split("^")
@@ -102,15 +104,16 @@ def evaluate(expression):
                 return answer if errorMessage(answer) else "syntax error"
         
         #raising powers
-        for i in range(-2, -len(parts)-1, -1):
-            print(i)
+        for i in range(len(parts)-2, -1, -1):
             base = evaluate(parts[i])
             
             #error
             if not isNumber(base):
                 return base if errorMessage(base) else "syntax error"
     
-            answer = float(base) ** float(answer)
+            a = float(base)
+            b = float(answer)
+            answer = -float(-a) ** float(b) if float(a < 0) else float(a) ** float(b)
             
         return str(answer)
     
