@@ -51,7 +51,7 @@ def evaluate(expression):
             if not isNumber(part):
                 return part if errorMessage(part) else "syntax error"  
             
-            total += float(part)
+            total += parseFloat(part)
             
         return str(total)
     
@@ -71,9 +71,9 @@ def evaluate(expression):
             if not isNumber(part):
                 return part if errorMessage(part) else "syntax error" 
             elif i == 0:
-                total = float(part)
+                total = parseFloat(part)
             else:
-                total -= float(part)
+                total -= parseFloat(part)
                 
         return str(total)
     
@@ -91,7 +91,7 @@ def evaluate(expression):
             if not isNumber(part):
                 return part if errorMessage(part) else "syntax error"
             
-            product *= float(part)
+            product *= parseFloat(part)
             
         return str(product)
          
@@ -111,11 +111,11 @@ def evaluate(expression):
         
             #setting number as dividend or dividing if possible
             if i == 0:
-                quotient = float(part)
-            elif float(part) == 0:
+                quotient = parseFloat(part)
+            elif parseFloat(part) == 0:
                 return "divide by 0 error"
             else:
-                quotient /= float(part)
+                quotient /= parseFloat(part)
                 
         return str(quotient)
     
@@ -137,9 +137,9 @@ def evaluate(expression):
             if not isNumber(base):
                 return base if errorMessage(base) else "syntax error"
     
-            a = float(base)
-            b = float(answer)
-            answer = -float(-a) ** float(b) if float(a < 0) else float(a) ** float(b)
+            a = parseFloat(base)
+            b = parseFloat(answer)
+            answer = -((-a) ** b) if a < 0 else a ** b
             
         return str(answer)
     
@@ -147,18 +147,36 @@ def evaluate(expression):
         
         
 #checks if a string is a calculator error message
-#@param str - string in question
+#@param string - string in question
 #returns true if string is a recorded error message
-def errorMessage(str):
+def errorMessage(string):
     messages = ["syntax error", "error. can't compute", "divided by 0 error"]
-    return str in messages
+    return string in messages
 
 #checks if a string is a number
-#@param str - string in question
-#returns true if string is a number, false if clearly not
-def isNumber(str):
+#@param numString - string in question
+#returns true if string is a number or number surrounded by parentheses
+def isNumber(numString):
+    testString = numString
+    
+    #string of form ([number])
+    if numString[0] == "(" and numString[-1] == ")":
+        testString = numString[1:-1]
+    
     try:
-        float(str)
+        float(testString)
         return True
     except ValueError:
         return False
+    
+#parses float from string, if possible
+#@param numString - string in question
+#returns number contained in number string or string of form ([number])
+def parseFloat(numString):
+    trimmedString  = numString
+    
+    #string of form ([number])
+    if numString[0] == "(" and numString[-1] == ")":
+        trimmedString = numString[1:-1]
+        
+    return float(trimmedString)
