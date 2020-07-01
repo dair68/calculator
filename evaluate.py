@@ -11,6 +11,32 @@ import re
 #@param expression - a string consisting of the expression
 #returns a string with answer to expression or error message
 def evaluate(expression):
+    #parentheses
+    if "(" in expression or ")" in expression:
+        #checking for balanced parentheses
+        if expression.count("(") != expression.count(")"):
+            return "syntax error"
+        
+        pattern = r"\([^\(\)]*?\)"
+        matches = re.findall(pattern, expression)
+        print(matches)
+        newExpression = expression
+        
+        #computing expressions
+        for part in matches:
+            inside = part[1:-1]
+            num = evaluate(inside)
+            
+            #error
+            if not isNumber(num):
+                return num if errorMessage(num) else "syntax error" 
+            
+            print(num)
+            newExpression = newExpression.replace(part, num)
+            print(newExpression)
+            
+        return evaluate(newExpression)
+    
     #addition
     if "+" in expression:
         print("adding")

@@ -33,6 +33,16 @@ class Calculator(tk.Frame):
         self.decimalButton.bind("<Button-1>", self.appendSymbol)
         self.decimalButton.grid(row=5, column=1)
         
+        self.leftParenButton = tk.Button(self)
+        self.leftParenButton["text"] = "("
+        self.leftParenButton.bind("<Button-1>", self.appendSymbol)
+        self.leftParenButton.grid(row=1, column=1)
+        
+        self.rightParenButton = tk.Button(self)
+        self.rightParenButton["text"] = ")"
+        self.rightParenButton.bind("<Button-1>", self.appendSymbol)
+        self.rightParenButton.grid(row=1, column=2)
+        
         self.answerButton = tk.Button(self)
         self.answerButton["text"] = "ans"
         self.answerButton.grid(row=5, column=2)
