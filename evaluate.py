@@ -13,29 +13,40 @@ import re
 def evaluate(expression):
     #parentheses
     if "(" in expression or ")" in expression:
-        #checking for balanced parentheses
-        if expression.count("(") != expression.count(")"):
+        #checking parentheses syntax
+        if not correctParentheses(expression):
             return "syntax error"
+        
+        #expression is of form ([number])
+        if isNumber(expression):
+            return str(parseFloat(expression))
         
         pattern = r"\([^\(\)]*?\)"
         matches = re.findall(pattern, expression)
         print(matches)
         newExpression = expression
+        subs = 0
         
         #computing expressions
         for part in matches:
             inside = part[1:-1]
-            num = evaluate(inside)
             
-            #error
-            if not isNumber(num):
-                return num if errorMessage(num) else "syntax error" 
+            #parentheses does not contain number literal
+            if not isNumber(inside):
+                num = evaluate(inside)
             
-            print(num)
-            newExpression = newExpression.replace(part, num)
-            print(newExpression)
+                #error
+                if not isNumber(num):
+                    return num if errorMessage(num) else "syntax error" 
             
-        return evaluate(newExpression)
+                print(num)
+                newExpression = newExpression.replace(inside, num)
+                print(newExpression)
+                subs += 1
+            
+        #simplifying occured
+        if subs > 0:
+            return evaluate(newExpression)
     
     #addition
     if "+" in expression:
@@ -55,7 +66,7 @@ def evaluate(expression):
             
         return str(total)
     
-    subPattern = r"(?<=[^^/*-])-"
+    subPattern = r"(?<=[^^(/*-])-"
     
     #subtraction
     if re.search(subPattern, expression):
@@ -131,7 +142,12 @@ def evaluate(expression):
         
         #raising powers
         for i in range(len(parts)-2, -1, -1):
-            base = evaluate(parts[i])
+            baseString = parts[i]
+            base = baseString
+            
+            #simplifying base if needed
+            if not isNumber(base):
+                base = evaluate(baseString)
             
             #error
             if not isNumber(base):
@@ -139,7 +155,12 @@ def evaluate(expression):
     
             a = parseFloat(base)
             b = parseFloat(answer)
-            answer = -((-a) ** b) if a < 0 else a ** b
+            
+            #base surrounded by parentheses
+            if base[0] == "(" and base[-1] == ")":
+                answer = a ** b
+            else:
+                answer = -((-a) ** b) if a < 0 else a ** b
             
         return str(answer)
     
@@ -180,3 +201,22 @@ def parseFloat(numString):
         trimmedString = numString[1:-1]
         
     return float(trimmedString)
+
+#checks if the parentheses in expression follow correct syntax
+#@param string - string in question
+#returns true if parentheses are balanced and in proper order
+def correctParentheses(string):
+    left = 0
+    right = 0
+    #checking for correct parentheses syntax
+    for char in string:
+        if char == "(":
+            left += 1
+        elif char == ")":
+            right +=1
+            
+        #syntax error
+        if right > left:
+            return False
+        
+    return right == left
