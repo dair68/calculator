@@ -25,7 +25,6 @@ def evaluate(expression):
         matches = re.findall(pattern, expression)
         print(matches)
         newExpression = expression
-        subs = 0
         
         #computing expressions
         for part in matches:
@@ -42,11 +41,15 @@ def evaluate(expression):
                 print(num)
                 newExpression = newExpression.replace(inside, num)
                 print(newExpression)
-                subs += 1
             
         #simplifying occured
-        if subs > 0:
+        if newExpression != expression:
             return evaluate(newExpression)
+        
+        expandedExpression = addMultiSymbols(expression)
+        #multiplication symbols added
+        if(expandedExpression != expression):
+            return evaluate(expandedExpression)
     
     #addition
     if "+" in expression:
@@ -158,11 +161,11 @@ def evaluate(expression):
             
             #base surrounded by parentheses
             if base[0] == "(" and base[-1] == ")":
-                answer = a ** b
+                answer = str(a ** b)
             else:
-                answer = -((-a) ** b) if a < 0 else a ** b
+                answer = str(-((-a) ** b)) if a < 0 else str(a ** b)
             
-        return str(answer)
+        return answer
     
     return expression if isNumber(expression) else "error. can't compute"
         
@@ -220,3 +223,37 @@ def correctParentheses(string):
             return False
         
     return right == left
+
+#adds multiplication symbols to expression if possible. 
+#@param expression - string with mathematical expression
+#returns new string with * operator added. ex: (2)4 -> (2)*4
+def addMultiSymbols(expression):
+    leftPattern = r"(?<=[^\s^(+*/-])\("
+    #indexes = [m.start() for m in re.finditer(pattern1, expression)]    
+    #print(indexes)
+    newExpression = ""
+    start = 0
+    
+    #adding operators to new expression
+    for match in re.finditer(leftPattern, expression):
+        index = match.start()
+        newExpression = newExpression[:start + 1] + expression[start:index] + "*"
+        start = index
+    
+    newExpression = newExpression + expression[start:]
+    print(newExpression)
+    
+    rightPattern = r"\)(?=[^\s^)+*/-])"
+    finalExpression = ""
+    start = 0
+    
+    #adding operators to final expression
+    for match in re.finditer(rightPattern, newExpression):
+        index = match.start()
+        finalExpression = finalExpression[:start + 2] + newExpression[start:index + 1] + "*"
+        start = index + 1
+        
+    finalExpression = finalExpression + newExpression[start:]
+    print(finalExpression)
+    
+    return finalExpression
