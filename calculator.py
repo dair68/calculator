@@ -6,6 +6,7 @@ Created on Thu Jun 18 16:25:54 2020
 """
 
 import tkinter as tk
+from tkinter import font
 import evaluate as ev
 
 class Calculator(tk.Frame):
@@ -15,13 +16,15 @@ class Calculator(tk.Frame):
         #calling parent constructor
         super().__init__(master)
         self.master = master
+        defaultFont = font.nametofont("TkDefaultFont")
+        defaultFont.configure(family="Fixedsys", size=10)
         self.pack()
         self.createWidgets()
         
     #creates child widgets
     def createWidgets(self):
-        self.display = tk.Label(self, bg="white", anchor="w")
-        self.display.grid(row=0, column=0, columnspan=4)
+        self.display = tk.Label(self, text=" "*20, bg="white", anchor="w")
+        self.display.grid(row=0, column=0, columnspan=5)
         
         self.enterButton = tk.Button(self, height=1, width=4)
         self.enterButton["text"] = "Enter"
@@ -89,14 +92,25 @@ class Calculator(tk.Frame):
     def appendSymbol(self, event):
         button = event.widget
         symbol = button["text"]
-        self.display["text"] += str(symbol)
+        trimmedDisplay = self.display["text"].rstrip()
+        trimmedDisplay += str(symbol)
+        self.updateDisplay(trimmedDisplay)
         
     #evaluates expression and displays answer or error message
     def compute(self):
         text = self.display["text"]
         message = ev.evaluate(text)
-        self.display["text"] = message
+        self.updateDisplay(message)
+        
+    #updates display with a string. Will leave whitespace unless exceeds 50 chars
+    #@param text - string to be displayed
+    def updateDisplay(self, text):
+        #display will have trailing whitespace
+        if len(text) < 20:
+            self.display["text"] = text + " "*(20 - len(text))
+        else:
+            self.display["text"] = text
         
     #clears all text from display
     def clearDisplay(self):
-        self.display["text"] = ""
+        self.display["text"] = " "*20
