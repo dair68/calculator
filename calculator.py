@@ -98,8 +98,19 @@ class Calculator(tk.Frame):
         
     #evaluates expression and displays answer or error message
     def compute(self):
-        text = self.display["text"]
+        text = self.display["text"].rstrip()
         message = ev.evaluate(text)
+        print(message)
+        
+        #checking if answer is integer to remove trailing .0
+        if ev.isNumber(message):
+            floatString = str(float(message))
+            print(floatString)
+            
+            #integer
+            if floatString[-2:] == ".0":
+                message = floatString[:-2]
+        
         self.updateDisplay(message)
         
     #updates display with a string. Will leave whitespace unless exceeds 50 chars
