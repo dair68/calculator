@@ -23,31 +23,31 @@ class Calculator(tk.Frame):
         self.display = tk.Label(self, bg="white", anchor="w")
         self.display.grid(row=0, column=0, columnspan=4)
         
-        self.enterButton = tk.Button(self)
+        self.enterButton = tk.Button(self, height=1, width=4)
         self.enterButton["text"] = "Enter"
         self.enterButton.grid(row=5, column=4)
         self.enterButton.bind("<Button-1>", lambda e : self.compute())
         
-        self.decimalButton = tk.Button(self)
+        self.decimalButton = tk.Button(self, height=1, width=3)
         self.decimalButton["text"] = "."
         self.decimalButton.bind("<Button-1>", self.appendSymbol)
         self.decimalButton.grid(row=5, column=1)
         
-        self.leftParenButton = tk.Button(self)
+        self.leftParenButton = tk.Button(self, height=1, width=3)
         self.leftParenButton["text"] = "("
         self.leftParenButton.bind("<Button-1>", self.appendSymbol)
         self.leftParenButton.grid(row=1, column=1)
         
-        self.rightParenButton = tk.Button(self)
+        self.rightParenButton = tk.Button(self, height=1, width=3)
         self.rightParenButton["text"] = ")"
         self.rightParenButton.bind("<Button-1>", self.appendSymbol)
         self.rightParenButton.grid(row=1, column=2)
         
-        self.answerButton = tk.Button(self)
+        self.answerButton = tk.Button(self, height=1, width=3)
         self.answerButton["text"] = "ans"
         self.answerButton.grid(row=5, column=2)
         
-        self.clearButton = tk.Button(self)
+        self.clearButton = tk.Button(self, height=1, width=4)
         self.clearButton["text"] = "clear"
         self.clearButton.grid(row=4, column=4)
         self.clearButton.bind("<Button-1>", lambda e : self.clearDisplay())
@@ -59,7 +59,7 @@ class Calculator(tk.Frame):
     def createNumButtons(self):
         self.numButtons = []
         for i in range(10):
-            button = tk.Button(self)
+            button = tk.Button(self, height=1, width=3)
             
             #placing 0 button in bottom left
             if i == 0:
@@ -78,7 +78,7 @@ class Calculator(tk.Frame):
         keys = ["exp", "div", "mult", "add", "sub"]
         
         for i in range(len(keys)):
-            button = tk.Button(self)
+            button = tk.Button(self, height=1, width=3)
             button["text"] = symbols[i]
             button.grid(row = i+1, column = 3)
             button.bind("<Button-1>", self.appendSymbol)
