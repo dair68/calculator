@@ -184,8 +184,9 @@ def isNumber(numString):
     testString = numString
     
     #string of form ([number])
-    if numString[0] == "(" and numString[-1] == ")":
-        testString = numString[1:-1]
+    if len(numString) >= 2:
+        if numString[0] == "(" and numString[-1] == ")":
+            testString = numString[1:-1]
     
     try:
         float(testString)
