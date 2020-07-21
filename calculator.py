@@ -75,15 +75,15 @@ class Calculator(tk.Frame):
             button.bind("<Button-1>", self.appendSymbol)
             self.numButtons.append(button)
             
-    #creates operator buttons
+    #creates operators
     def createOperatorButtons(self):
         self.operatorButtons = {}
-        symbols = ["^", "/", "*", "+", "-"]
+        uniSymbols = [94, 247, 215, 43, 45]
         keys = ["exp", "div", "mult", "add", "sub"]
         
         for i in range(len(keys)):
             button = tk.Button(self, height=1, width=3)
-            button["text"] = symbols[i]
+            button["text"] = chr(uniSymbols[i])
             button.grid(row = i+1, column = 3)
             button.bind("<Button-1>", self.appendSymbol)
             self.operatorButtons[keys[i]] = button
@@ -91,10 +91,13 @@ class Calculator(tk.Frame):
     #appends button's symbol to calculator's display text
     #@param event - event object
     def appendSymbol(self, event):
+        chart = {chr(247): "/", chr(215):"*"}
+        
         button = event.widget
         symbol = button["text"]
+        displayedChar = chart[symbol] if symbol in chart.keys() else symbol
         index = self.display.index("insert")
-        self.display.insert(index, symbol)
+        self.display.insert(index, displayedChar)
         self.display.xview(index)
         
     #evaluates expression and displays answer or error message
