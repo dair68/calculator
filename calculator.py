@@ -47,12 +47,14 @@ class Calculator(tk.Frame):
         self.rightParenButton.bind("<Button-1>", self.appendSymbol)
         self.rightParenButton.grid(row=1, column=2)
         
+        self.answer = 42
         self.answerButton = tk.Button(self, height=1, width=3)
-        self.answerButton["text"] = "ans"
+        self.answerButton["text"] = "Ans"
+        self.answerButton.bind("<Button-1>", self.appendSymbol)
         self.answerButton.grid(row=5, column=2)
         
         self.clearButton = tk.Button(self, height=1, width=4)
-        self.clearButton["text"] = "clear"
+        self.clearButton["text"] = "Clear"
         self.clearButton.grid(row=4, column=4)
         self.clearButton.bind("<Button-1>", lambda e : self.display.delete(0, "end"))
         
@@ -103,20 +105,22 @@ class Calculator(tk.Frame):
     #evaluates expression and displays answer or error message
     def compute(self):
         text = self.display.get()
-        message = ev.evaluate(text)
+        subbedString = text.replace("Ans", "(" + str(self.answer) + ")")
+        message = ev.evaluate(subbedString)
         print(message)
         
-        #checking if answer is integer to remove trailing .0
+        #checking if answer is number
         if ev.isNumber(message):
+            self.answer = float(message)
             floatString = str(float(message))
             print(floatString)
             
-            #integer
+            #removing trailing .0 for integers
             if floatString[-2:] == ".0":
                 message = floatString[:-2]
         
         self.updateDisplay(message)
-        
+    
     #updates display with a string. Will leave whitespace unless exceeds 50 chars
     #@param text - string to be displayed
     def updateDisplay(self, text):
