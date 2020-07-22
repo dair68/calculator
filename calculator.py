@@ -27,36 +27,34 @@ class Calculator(tk.Frame):
         self.display = tk.Entry(self)
         self.display.grid(row=0, column=0, columnspan=5)
         
-        self.enterButton = tk.Button(self, height=1, width=4)
-        self.enterButton["text"] = "Enter"
+        self.enterButton = tk.Button(self, text="Enter", height=1, width=4)
         self.enterButton.grid(row=5, column=4)
-        self.enterButton.bind("<Button-1>", lambda e : self.compute())
+        self.enterButton.bind("<Button-1>", lambda e: self.compute())
         
-        self.decimalButton = tk.Button(self, height=1, width=3)
-        self.decimalButton["text"] = "."
+        self.decimalButton = tk.Button(self, text=".", height=1, width=3)
         self.decimalButton.bind("<Button-1>", self.appendSymbol)
         self.decimalButton.grid(row=5, column=1)
         
-        self.leftParenButton = tk.Button(self, height=1, width=3)
-        self.leftParenButton["text"] = "("
+        self.leftParenButton = tk.Button(self, text="(", height=1, width=3)
         self.leftParenButton.bind("<Button-1>", self.appendSymbol)
         self.leftParenButton.grid(row=1, column=1)
         
-        self.rightParenButton = tk.Button(self, height=1, width=3)
-        self.rightParenButton["text"] = ")"
+        self.rightParenButton = tk.Button(self, text=")", height=1, width=3)
         self.rightParenButton.bind("<Button-1>", self.appendSymbol)
         self.rightParenButton.grid(row=1, column=2)
         
         self.answer = 42
-        self.answerButton = tk.Button(self, height=1, width=3)
-        self.answerButton["text"] = "Ans"
+        self.answerButton = tk.Button(self, text="Ans", height=1, width=3)
         self.answerButton.bind("<Button-1>", self.appendSymbol)
         self.answerButton.grid(row=5, column=2)
         
-        self.clearButton = tk.Button(self, height=1, width=4)
-        self.clearButton["text"] = "Clear"
+        self.clearButton = tk.Button(self, text="Clear", height=1, width=4)
         self.clearButton.grid(row=4, column=4)
-        self.clearButton.bind("<Button-1>", lambda e : self.display.delete(0, "end"))
+        self.clearButton.bind("<Button-1>", lambda e: self.display.delete(0, "end"))
+        
+        self.deleteButton = tk.Button(self, text="Del", height=1, width=4)
+        self.deleteButton.grid(row=1, column=4)
+        self.deleteButton.bind("<Button-1>", lambda e: self.deleteSymbol())
         
         self.createNumButtons()
         self.createOperatorButtons()
@@ -101,6 +99,16 @@ class Calculator(tk.Frame):
         index = self.display.index("insert")
         self.display.insert(index, displayedChar)
         self.display.xview(index)
+        
+    #deletes symbol behind current location of text cursor
+    def deleteSymbol(self):
+        index = self.display.index("insert")
+        
+        #Ans variable precedes text cursor
+        if self.display.get()[-3:] == "Ans":
+            self.display.delete(index - 3, index)
+        else:
+            self.display.delete(index - 1)
         
     #evaluates expression and displays answer or error message
     def compute(self):
