@@ -16,6 +16,8 @@ class Calculator(tk.Frame):
         #calling parent constructor
         super().__init__(master)
         self.master = master
+        self.lastEquation = ""
+        self.hasErrMessage = False
         defaultFont = font.nametofont("TkDefaultFont")
         defaultFont.configure(family="Fixedsys", size=10)
         self.pack()
@@ -50,7 +52,7 @@ class Calculator(tk.Frame):
         
         self.clearButton = tk.Button(self, text="Clear", height=1, width=4)
         self.clearButton.grid(row=4, column=4)
-        self.clearButton.bind("<Button-1>", lambda e: self.display.delete(0, "end"))
+        self.clearButton.bind("<Button-1>", lambda e: self.clearDisplay())
         
         self.deleteButton = tk.Button(self, text="Del", height=1, width=4)
         self.deleteButton.grid(row=1, column=4)
@@ -96,41 +98,67 @@ class Calculator(tk.Frame):
         button = event.widget
         symbol = button["text"]
         displayedChar = chart[symbol] if symbol in chart.keys() else symbol
-        index = self.display.index("insert")
-        self.display.insert(index, displayedChar)
-        self.display.xview(index)
+        
+        #calculator has error message displayed
+        if self.hasErrMessage:
+           self.clearErrorMessage()
+        else:
+            index = self.display.index("insert")
+            self.display.insert(index, displayedChar)
+            self.display.xview(index)
         
     #deletes symbol behind current location of text cursor
     def deleteSymbol(self):
-        index = self.display.index("insert")
-        
-        #Ans variable precedes text cursor
-        if self.display.get()[-3:] == "Ans":
-            self.display.delete(index - 3, index)
+        #calculator has error message displayed
+        if self.hasErrMessage:
+            self.clearErrorMessage()
         else:
-            self.display.delete(index - 1)
+            index = self.display.index("insert")
+        
+            #Ans variable precedes text cursor
+            if self.display.get()[-3:] == "Ans":
+                self.display.delete(index - 3, index)
+            else:
+                self.display.delete(index - 1)
         
     #evaluates expression and displays answer or error message
     def compute(self):
-        text = self.display.get()
-        subbedString = text.replace("Ans", "(" + str(self.answer) + ")")
-        message = ev.evaluate(subbedString)
-        print(message)
+        #calculator displays error message
+        if self.hasErrMessage:
+            self.clearErrorMessage()
+        else:
+            text = self.display.get()
+            self.lastEquation = text
+            subbedString = text.replace("Ans", "(" + str(self.answer) + ")")
+            message = ev.evaluate(subbedString)
+            print(message)
         
-        #checking if answer is number
-        if ev.isNumber(message):
-            self.answer = float(message)
-            floatString = str(float(message))
-            print(floatString)
+            #checking if answer is number
+            if ev.isNumber(message):
+                self.answer = float(message)
+                floatString = str(float(message))
+                print(floatString)
             
-            #removing trailing .0 for integers
-            if floatString[-2:] == ".0":
-                message = floatString[:-2]
+                #removing trailing .0 for integers
+                if floatString[-2:] == ".0":
+                    message = floatString[:-2]
+            else:
+                self.hasErrMessage = True
         
-        self.updateDisplay(message)
+            self.updateDisplay(message)
     
     #updates display with a string. Will leave whitespace unless exceeds 50 chars
     #@param text - string to be displayed
     def updateDisplay(self, text):
         self.display.delete(0, "end")
         self.display.insert(0, text)
+            
+    #removes displayed error message and replaces it with last inputted equation
+    def clearErrorMessage(self):
+         self.updateDisplay(self.lastEquation)
+         self.hasErrMessage = False
+         
+    #wipes away everythin on display. if wiping error message, displays prev equation
+    def clearDisplay(self):
+        #display has error message
+        self.clearErrorMessage() if self.hasErrMessage else self.display.delete(0, "end")
