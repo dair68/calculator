@@ -25,12 +25,12 @@ class Calculator(tk.Frame):
         
     #creates child widgets
     def createWidgets(self):
-        #self.display = tk.Label(self, text=" "*20, bg="white", anchor="w")
-        self.display = tk.Entry(self)
-        self.display.grid(row=0, column=0, columnspan=5)
+        self.display = tk.Entry(self, width=30)
+        self.display.grid(row=0, column=0, columnspan=6)
+        self.display.focus_set()
         
-        self.enterButton = tk.Button(self, text="Enter", height=1, width=4)
-        self.enterButton.grid(row=5, column=4)
+        self.enterButton = tk.Button(self, text="Enter", height=1, width=5)
+        self.enterButton.grid(row=5, column=4, columnspan=2)
         self.enterButton.bind("<Button-1>", lambda e: self.compute())
         
         self.decimalButton = tk.Button(self, text=".", height=1, width=3)
@@ -50,13 +50,21 @@ class Calculator(tk.Frame):
         self.answerButton.bind("<Button-1>", self.appendSymbol)
         self.answerButton.grid(row=5, column=2)
         
-        self.clearButton = tk.Button(self, text="Clear", height=1, width=4)
-        self.clearButton.grid(row=4, column=4)
+        self.clearButton = tk.Button(self, text="Clear", height=1, width=5)
+        self.clearButton.grid(row=4, column=4, columnspan=2)
         self.clearButton.bind("<Button-1>", lambda e: self.clearDisplay())
         
-        self.deleteButton = tk.Button(self, text="Del", height=1, width=4)
-        self.deleteButton.grid(row=1, column=4)
+        self.deleteButton = tk.Button(self, text="Del", height=1, width=5)
+        self.deleteButton.grid(row=1, column=4, columnspan=2)
         self.deleteButton.bind("<Button-1>", lambda e: self.deleteSymbol())
+        
+        self.leftButton = tk.Button(self, text="\u2190", height=1, width=2)
+        self.leftButton.grid(row=2, column=4)
+        self.leftButton.bind("<Button-1>", lambda e : self.moveCursorLeft())
+        
+        self.rightButton = tk.Button(self, text="\u2192", height=1, width=2)
+        self.rightButton.grid(row=2, column=5)
+        self.rightButton.bind("<Button-1>", lambda e : self.moveCursorRight())
         
         self.createNumButtons()
         self.createOperatorButtons()
@@ -120,6 +128,16 @@ class Calculator(tk.Frame):
                 self.display.delete(index - 3, index)
             else:
                 self.display.delete(index - 1)
+        
+    #moves cursor left
+    def moveCursorLeft(self):
+        index = self.display.index("insert")
+        self.display.icursor(index - 1)
+        
+    #moves cursor right
+    def moveCursorRight(self):
+        index = self.display.index("insert")
+        self.display.icursor(index + 1)
         
     #evaluates expression and displays answer or error message
     def compute(self):
