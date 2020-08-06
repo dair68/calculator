@@ -180,7 +180,7 @@ class Calculator(tk.Frame):
         self.updateAnswer()
         self.equationHist.append(text)
         self.prevAnswers.append(message)
-        self.equationIndex += 1
+        self.equationIndex = len(self.equationHist) - 1
     
     #updates display with a string
     #@param text - string to be displayed
